@@ -169,7 +169,7 @@ cv2.ocl.setUseOpenCL(False)
 cap = cv2.VideoCapture(0)
 
 print("Loading Haarcascade Classifier...")
-face = cv2.CascadeClassifier('models/haarcascade_frontalface_default.xml')
+face = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 if face.empty():
     print("Haarcascade Classifier failed to load.")
 else:
