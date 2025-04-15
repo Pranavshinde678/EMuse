@@ -184,7 +184,7 @@ body {
 </style>
 '''
 st.markdown(page_bg_img, unsafe_allow_html=True)
-st.markdown("<h2 style='text-align: center; color: white'><b>Emotion based music recommendation</b></h2>"
+st.markdown("<h3 style='text-align: center; color: white'><b>E-Muse: Emotion Driven Music Recommendation System</b></h3>"
             , unsafe_allow_html=True)
 st.markdown("<h5 style='text-align: center; color: grey;'><b>Click on the name of recommended song to reach website</b></h5>"
             , unsafe_allow_html=True)
