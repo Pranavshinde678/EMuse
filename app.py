@@ -166,7 +166,14 @@ emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutra
 
 
 cv2.ocl.setUseOpenCL(False)
-cap = cv2.VideoCapture(2)
+for i in range(5):  # Test first 5 indexes
+    cap = cv2.VideoCapture(i)
+    if cap.isOpened():
+        print(f"Camera found at index {i}")
+        cap.release()
+    else:
+        print(f"No camera found at index {i}")
+
 
 print("Loading Haarcascade Classifier...")
 face = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
