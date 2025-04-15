@@ -6,3 +6,4 @@ opencv-python-headless
 tensorflow
 keras
 collection
+libgl1-mesa-glx
