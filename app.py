@@ -13,7 +13,7 @@ import base64
 
 
 
-df = pd.read_csv("C:/Users/prana/Downloads/Emotion-based-music-recommendation-system-main/Emotion-based-music-recommendation-system-main/muse_v3.csv")
+df = pd.read_csv("muse_v3.csv")
 
 df['link'] = df['lastfm_url']
 df['name'] = df['track']
@@ -160,7 +160,7 @@ model.add(Dropout(0.5))
 model.add(Dense(7, activation='softmax'))
 
 
-model.load_weights('C:/Users/prana/Downloads/Emotion-based-music-recommendation-system-main/Emotion-based-music-recommendation-system-main/model.h5')
+model.load_weights('model.h5')
 
 emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
 
@@ -169,7 +169,7 @@ cv2.ocl.setUseOpenCL(False)
 cap = cv2.VideoCapture(0)
 
 print("Loading Haarcascade Classifier...")
-face = cv2.CascadeClassifier('C:/Users/prana/Downloads/Emotion-based-music-recommendation-system-main/Emotion-based-music-recommendation-system-main/haarcascade_frontalface_default.xml')
+face = cv2.CascadeClassifier('models/haarcascade_frontalface_default.xml')
 if face.empty():
     print("Haarcascade Classifier failed to load.")
 else:
