@@ -166,28 +166,24 @@ emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutra
 
 
 
-# Attempt to open the default camera (index 0)
-cap = cv2.VideoCapture(0)
+def open_camera():
+    # Try opening the camera at various indices (0, 1, 2, 3...)
+    for i in range(5):  # Check up to 5 different camera indices
+        cap = cv2.VideoCapture(i)
+        if cap.isOpened():
+            print(f"Camera opened successfully at index {i}")
+            return cap
+        cap.release()
+    print("Error: Could not open any camera")
+    return None
 
-# Check if the camera was successfully opened
-if not cap.isOpened():
-    print("Error: Could not open camera")
+# Attempt to open the camera
+cap = open_camera()
+
+if cap is None:
+    st.error("Could not access the camera. Please check the camera settings.")
 else:
-    print("Camera opened successfully")
-
-    # Read a frame from the camera
-    ret, frame = cap.read()
-
-    if ret:
-        # Display the frame if successful
-        cv2.imshow('Camera', frame)
-        cv2.waitKey(0)  # Wait for a key press to close the window
-    else:
-        print("Error: Failed to capture frame")
-
-    # Release the camera and close any OpenCV windows
-    cap.release()
-    cv2.destroyAllWindows()
+    st.success("Camera opened successfully")
 
 print("Loading Haarcascade Classifier...")
 face = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
