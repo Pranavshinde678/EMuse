@@ -166,7 +166,7 @@ emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutra
 
 
 cv2.ocl.setUseOpenCL(False)
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(2)
 
 print("Loading Haarcascade Classifier...")
 face = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
