@@ -22,112 +22,104 @@ df['pleasant'] = df['valence_tags']
 df['valence'] = df['valence_tags']
 df['arousal'] = df['arousal_tags']
 df['dominance'] = df['dominance_tags']
+df['genre']=df['genre']
 
+df = df[['name', 'emotional', 'pleasant', 'valence', 'arousal', 'dominance', 'link', 'artist','genre']]
+df.columns = df.columns.str.strip().str.lower()
+age = st.number_input("Enter your age", min_value=10, max_value=99, step=1)
+# ✅ Split multi-genre column
+df['genre'] = df['genre'].fillna("").apply(lambda x: [g.strip().lower() for g in x.split(",")])
 
-df = df[['name', 'emotional', 'pleasant', 'valence', 'arousal', 'dominance', 'link', 'artist']]
-print(df)
-
-
+# ✅ Sort by emotional tags
 df = df.sort_values(by=["emotional", "pleasant", "valence", "arousal", "dominance"])
-
 df = df.reset_index(drop=True)
-print(df)
 
-
+# Emotion subsets
 df_sad = df[:14000]
 df_fear = df[14001:28000]
-df_disgust=df[28001:42000]
+df_disgust = df[28001:42000]
 df_angry = df[42001:56000]
 df_neutral = df[56001:70000]
-df_surprise=df[700001:84000]
+df_surprise = df[70001:84000]
 df_happy = df[84001:]
 
 
-def fun(list):
+# ✅ --- NEW AGE BASED GENRE FILTER LOGIC ---
+def filter_by_age_and_emotion(data, age):
+    if age <= 20:
+        target = ["pop", "hip hop", "rap", "edm", "trap", "dance"]
+    elif 21 <= age <= 35:
+        target = ["pop", "indie", "rock", "edm", "jazz", "hip hop"]
+    elif 36 <= age <= 50:
+        target = ["classical", "jazz", "soft rock", "acoustic", "instrumental"]
+    else:
+        target = ["classical", "oldies", "instrumental", "retro"]
 
+    # match ANY of the genres in song genre list
+    filtered = data[data['genre'].apply(lambda genre_list: any(t in genre_list for t in target))]
+
+    return filtered
+
+
+def fun(emolist, age):
     data = pd.DataFrame()
 
-    if len(list) == 1:
-        v = list[0]
+    if len(emolist) == 1:
+        v = emolist[0]
         t = 30
+
         if v == 'Neutral':
-            data = pd.concat([data, df_neutral.sample(n=t)], ignore_index=True)
+            base = df_neutral
         elif v == 'Angry':
-             data = pd.concat([data, df_angry.sample(n=t)], ignore_index=True)
+            base = df_angry
         elif v == 'fear':
-            data = pd.concat([data, df_fear.sample(n=t)], ignore_index=True)
+            base = df_fear
         elif v == 'happy':
-            data = pd.concat([data, df_happy.sample(n=t)], ignore_index=True)
+            base = df_happy
+        elif v == 'Surprised':
+            base = df_surprise
         else:
-            data = pd.concat([data, df_angry.sample(n=t)], ignore_index=True)
+            base = df_sad
 
-    elif len(list) == 2:
-        times = [30,20]
-        for i in range(len(list)):
-            v = list[i]
-            t = times[i]
-            if v == 'Neutral':
-                data = pd.concat([data, df_neutral.sample(n=t)], ignore_index=True)
-            elif v == 'Angry':    
-                data = pd.concat([data, df_angry.sample(n=t)], ignore_index=True)
-            elif v == 'fear':              
-                data = pd.concat([data, df_fear.sample(n=t)], ignore_index=True)
-            elif v == 'happy':             
-                data = pd.concat([data, df_happy.sample(n=t)], ignore_index=True)
-            else:              
-               data = pd.concat([df_sad.sample(n=t)])
+        filtered = filter_by_age_and_emotion(base, age)
 
-    elif len(list) == 3:
-        times = [55,20,15]
-        for i in range(len(list)): 
-            v = list[i]          
-            t = times[i]
+        if len(filtered) < t:
+            data = filtered
+            data = pd.concat([data, base.sample(t - len(filtered))], ignore_index=True)
+        else:
+            data = filtered.sample(t)
 
-            if v == 'Neutral':              
-                data = pd.concat([data, df_neutral.sample(n=t)], ignore_index=True)
-            elif v == 'Angry':               
-                data = pd.concat([data, df_angry.sample(n=t)], ignore_index=True)
-            elif v == 'fear':             
-                data = pd.concat([data, df_fear.sample(n=t)], ignore_index=True)
-            elif v == 'happy':               
-                data = pd.concat([data, df_happy.sample(n=t)], ignore_index=True)
-            else:      
-                data = pd.concat([df_sad.sample(n=t)])
-
-
-    elif len(list) == 4:
-        times = [30,29,18,9]
-        for i in range(len(list)):
-            v = list[i]
-            t = times[i]
-            if v == 'Neutral': 
-                data = pd.concat([data, df_neutral.sample(n=t)], ignore_index=True)
-            elif v == 'Angry':              
-                data = pd.concat([data, df_angry.sample(n=t)], ignore_index=True)
-            elif v == 'fear':              
-                data = pd.concat([data, df_fear.sample(n=t)], ignore_index=True)
-            elif v == 'happy':               
-                data =pd.concat([data, df_happy.sample(n=t)], ignore_index=True)
-            else:              
-               data = pd.concat([df_sad.sample(n=t)])
     else:
-        times = [10,7,6,5,2]
-        for i in range(len(list)):           
-            v = list[i]         
-            t = times[i]
-            if v == 'Neutral':
-                data = pd.concat([data, df_neutral.sample(n=t)], ignore_index=True)
-            elif v == 'Angry':           
-                data = pd.concat([data, df_angry.sample(n=t)], ignore_index=True)
-            elif v == 'fear':           
-                data = pd.concat([data, df_fear.sample(n=t)], ignore_index=True)
-            elif v == 'happy':          
-                data = pd.concat([data, df_happy.sample(n=t)], ignore_index=True)
-            else:
-                data = pd.concat([df_sad.sample(n=t)])
+        data = pd.DataFrame()
+        times = [30, 20, 15, 10, 5]
 
-    print("data of list func... :",data)
+        for i, v in enumerate(emolist):
+            t = times[i] if i < len(times) else 5
+
+            if v == 'Neutral':
+                base = df_neutral
+            elif v == 'Angry':
+                base = df_angry
+            elif v == 'fear':
+                base = df_fear
+            elif v == 'happy':
+                base = df_happy
+            elif v == 'Surprised':
+                base = df_surprise
+            else:
+                base = df_sad
+
+            filtered = filter_by_age_and_emotion(base, age)
+
+            if len(filtered) < t:
+                chunk = pd.concat([filtered, base.sample(t - len(filtered))], ignore_index=True)
+            else:
+                chunk = filtered.sample(t)
+
+            data = pd.concat([data, chunk], ignore_index=True)
+
     return data
+
 
 def pre(l):
 
@@ -248,7 +240,7 @@ with col2:
 with col3:
     pass
 
-new_df = fun(list)
+new_df = fun(list,age)
 st.write("")
 
 st.markdown("<h5 style='text-align: center; color: grey;'><b>Recommended song's with artist names</b></h5>"
